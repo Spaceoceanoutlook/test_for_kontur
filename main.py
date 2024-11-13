@@ -2,23 +2,16 @@ import random
 
 
 def generate_number() -> str:
-    """ Возвращает четырехзначное число из уникальных чисел """
-    numbers = [str(i) for i in range(1, 10)]
-    random.shuffle(numbers)
-    list_numbers = []
-    for number in numbers:
-        if len(list_numbers) == 4:
-            return "".join(list_numbers)
-        if number not in list_numbers:
-            list_numbers.append(number)
+    """ Возвращает четырехзначное число из уникальных цифр """
+    numbers = random.sample(range(1, 10), 4)
+    return ''.join(map(str, numbers))
 
 
 def checking_user_number_for_letters(number: str) -> bool:
     """ Проверяет входящее значение на цифровые символы """
-    for n in number:
-        if not n.isdigit():
-            print('Некорректный запрос: вы ввели не число')
-            return False
+    if not number.isdigit():
+        print('Некорректный запрос: вы ввели не число')
+        return False
     return True
 
 
@@ -32,7 +25,7 @@ def checking_user_number_for_length(number: str) -> bool:
 
 def checking_user_number_for_uniqueness(number: str) -> bool:
     """ Проверяет входящее значение на уникальность символов"""
-    if len(list(number)) != len(set(number)):
+    if len(set(number)) != 4:
         print('Некорректный запрос: вы ввели неуникальные цифры')
         return False
     return True
@@ -40,7 +33,6 @@ def checking_user_number_for_uniqueness(number: str) -> bool:
 
 if __name__ == '__main__':
     print('Игра "Быки и коровы"')
-    print('Нужно отгадать четырехзначное число из уникальных цифр')
     # Получаем загаданное число
     secret_number = generate_number()
     while True:
@@ -50,17 +42,15 @@ if __name__ == '__main__':
         checks = [checking_user_number_for_letters,
                   checking_user_number_for_length,
                   checking_user_number_for_uniqueness]
-        for check in checks:
-            if not check(user_number):
-                break
-        else:
+        if all(check(user_number) for check in checks):
             if user_number == secret_number:
                 print('Число угадано!')
                 break
             # Находим количество быков и коров в переданном числе
-            for num in user_number:
-                if num in secret_number and user_number.index(num) == secret_number.index(num):
+
+            for user_digit, secret_digit in zip(user_number, secret_number):
+                if user_digit == secret_digit:
                     bulls += 1
-                elif num in secret_number:
+                elif user_digit in secret_number:
                     cows += 1
             print(f'{bulls} бык., {cows} кор.')
