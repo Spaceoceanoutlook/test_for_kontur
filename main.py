@@ -47,7 +47,6 @@ if __name__ == '__main__':
                 print('Число угадано!')
                 break
             # Находим количество быков и коров в переданном числе
-
             for user_digit, secret_digit in zip(user_number, secret_number):
                 if user_digit == secret_digit:
                     bulls += 1
